@@ -28,10 +28,10 @@ h1{font-size:26px;font-weight:600;letter-spacing:-.01em;margin:0}
 .p{--c:#e0a526}.w{--c:#e5493a}.r{--c:#2fb585}
 .d span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:10px;background:var(--c)}
 .d b{color:var(--c)}
-.ctl{display:flex;align-items:center;gap:6px}
-.ctl b{font-size:22px;font-weight:600;min-width:92px;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ctl button{width:40px;height:40px;border-radius:10px;border:0;background:var(--btn);color:var(--fg);font-size:22px;font-family:inherit}
-.ctl button:active,.txt:active{background:#34353a}
+.ctl,.ctl2{display:flex;align-items:center;gap:6px}
+.ctl b,.ctl2 b{font-size:22px;font-weight:600;min-width:92px;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctl button,.ctl2 button{width:40px;height:40px;border-radius:10px;border:0;background:var(--btn);color:var(--fg);font-size:22px;font-family:inherit}
+.ctl button:active,.ctl2 button:active,.txt:active{background:#34353a}
 select{font-family:inherit;font-size:16px;font-weight:500;background:var(--btn);color:var(--fg);border:0;border-radius:10px;height:40px;padding:0 10px;min-width:0}
 #pre{flex:1}
 .pr{padding:8px 10px}
@@ -67,7 +67,7 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 .chip b{font-size:20px;font-weight:600;color:var(--c,var(--fg))}
 .exl{margin-top:14px;color:var(--mut);font-size:15px;line-height:1.4}
 #tabs{display:flex;flex:none;margin:0 -20px;border-top:1px solid var(--ln)}
-#tabs button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:12px;font-weight:600;padding:10px 0 4px;display:flex;flex-direction:column;align-items:center;gap:4px}
+#tabs button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:11px;font-weight:600;padding:10px 0 4px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
 #tabs button.on{color:var(--fg)}
 .srow{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin-bottom:10px}
 .srow.on{border-color:var(--fg)}
@@ -83,6 +83,16 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 .vw{display:flex;flex-direction:column;gap:12px}
 .srow::after{content:"›";color:var(--mut);font-size:22px;padding:0 4px}
 #rem{font-size:18px;font-weight:600;margin-bottom:4px}
+.cm{display:flex;align-items:center;justify-content:space-between}
+.cm .txt{width:48px;padding:0;font-size:22px}
+.cmt{background:none;border:0;color:var(--fg);font:inherit;font-size:20px;font-weight:600;text-transform:capitalize}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cwk{text-align:center;color:var(--mut);font-size:13px;font-weight:600;padding:4px 0}
+.cdy{aspect-ratio:1;border:1px solid var(--ln);background:var(--card);color:var(--fg);border-radius:12px;font:inherit;font-size:16px;font-weight:500;padding:0}
+.cdy.on{background:var(--fg);color:var(--bg);font-weight:700;border-color:var(--fg)}
+.cdy.td{border:2px solid #2fb585}
+.gh{color:var(--mut);font-size:13px;font-weight:600;margin:8px 4px 2px}
+#xg{max-width:55%}
 </style>
 </head>
 <body>
@@ -120,6 +130,31 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 <p class="hint">Règle les temps à la volée, sans les enregistrer dans une séance.</p>
 <button class="go" id="fstart" style="margin-top:auto">Démarrer</button>
 </section>
+<section id="t-cal" class="tab">
+<h1>Calendrier</h1>
+<div class="cm"><button class="txt" id="cprev" aria-label="Mois précédent">‹</button><button class="cmt" id="cmon"></button><button class="txt" id="cnext" aria-label="Mois suivant">›</button></div>
+<div class="cg" id="cgrid"></div>
+<p class="hint" id="ccount" style="text-align:center;font-size:16px;color:var(--fg);font-weight:600"></p>
+<p class="hint">Touche un jour pour le cocher ou le décocher. Les jours où tu lances une séance sont cochés automatiquement.</p>
+</section>
+<section id="t-perf" class="tab">
+<div id="xl" class="vw">
+<div class="top"><h1>Performance</h1><button class="txt" id="xnew">+ Exercice</button></div>
+<p class="hint" id="xhint"></p>
+<div id="xlist"></div>
+</div>
+<div id="xe" class="vw" style="display:none">
+<div class="top"><button class="txt" id="xback">‹ Exercices</button></div>
+<h1 id="xtitle"></h1>
+<div class="row"><span>Poids</span><div class="ctl2"><button data-x="w" data-d="-1" aria-label="Moins">−</button><b id="x-w"></b><button data-x="w" data-d="1" aria-label="Plus">+</button></div></div>
+<div class="row"><span>Séries</span><div class="ctl2"><button data-x="s" data-d="-1" aria-label="Moins">−</button><b id="x-s"></b><button data-x="s" data-d="1" aria-label="Plus">+</button></div></div>
+<div class="row"><span>Répétitions</span><div class="ctl2"><button data-x="r" data-d="-1" aria-label="Moins">−</button><b id="x-r"></b><button data-x="r" data-d="1" aria-label="Plus">+</button></div></div>
+<div class="row"><span>Pas du poids</span><select id="xstep" aria-label="Pas du poids"><option value="1">1 kg</option><option value="2.5">2,5 kg</option><option value="5">5 kg</option></select></div>
+<div class="row"><span>Séance</span><select id="xg" aria-label="Séance de l'exercice"></select></div>
+<p class="hint">Les changements sont enregistrés automatiquement.</p>
+<div class="dbtn"><button class="txt" id="xren">Renommer</button><button class="txt" id="xdel">Supprimer</button></div>
+</div>
+</section>
 <section id="t-snd" class="tab">
 <h1>Sons</h1>
 <div class="row"><span>Son étape</span><select id="snd" aria-label="Son de changement d'étape"><option value="voix">Voix</option><option value="bip">Bip</option><option value="cloche">Cloche</option><option value="buzzer">Buzzer</option><option value="off">Aucun</option></select></div>
@@ -132,7 +167,7 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 <div class="btns"><button id="prev">‹ Retour</button><button id="pause">Pause</button><button id="skip">Passer ›</button></div>
 <button class="stopb" id="stop">Arrêter</button>
 </section>
-<nav id="tabs"><button data-t="t-home" class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Accueil</button><button data-t="t-sess"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Séances</button><button data-t="t-free"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>Libre</button><button data-t="t-snd"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Sons</button></nav>
+<nav id="tabs"><button data-t="t-home" class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Accueil</button><button data-t="t-sess"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Séances</button><button data-t="t-free"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>Libre</button><button data-t="t-cal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendrier</button><button data-t="t-perf"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-6M12 20V6M19 20v-9"/></svg>Performance</button><button data-t="t-snd"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Sons</button></nav>
 </main>
 <script>
 var $=function(i){return document.getElementById(i)};
@@ -171,8 +206,8 @@ function close(){$('dlg').style.display='none'}
 $('dno').onclick=close;$('dok').onclick=function(){var v=i.value;close();cb(v)};i.onkeydown=function(e){if(e.key==='Enter')$('dok').click()}}
 function dup(){dlg('Ce nom existe déjà.','',function(){},1)}
 function rename(n){dlg('Nouveau nom',n,function(m){m=(m||'').trim().slice(0,30);if(!m||m===n)return;if(P[m])return dup();
-var o={};Object.keys(P).forEach(function(k){o[k===n?m:k]=P[k]});P=o;if(act===n){act=m;rawput('chrono-act',m)}put('chrono-pre',P);show()})}
-function del(n){dlg('Supprimer « '+n+' » ?','',function(){delete P[n];if(act===n){act='';rawput('chrono-act','')}put('chrono-pre',P);show();closeEdit()},1)}
+var o={};Object.keys(P).forEach(function(k){o[k===n?m:k]=P[k]});P=o;if(act===n){act=m;rawput('chrono-act',m)}E.forEach(function(x){if(x.g===n)x.g=m});put('chrono-perf',E);put('chrono-pre',P);show()})}
+function del(n){dlg('Supprimer « '+n+' » ?','',function(){delete P[n];if(act===n){act='';rawput('chrono-act','')}E.forEach(function(x){if(x.g===n)x.g=''});put('chrono-perf',E);put('chrono-pre',P);show();closeEdit()},1)}
 $('pnew').onclick=function(){dlg('Nom de la séance (ex. Pectoraux)','',function(m){m=(m||'').trim().slice(0,30);if(!m)return;if(P[m])return dup();
 P[m]={prep:10,work:40,rest:20,rounds:8};put('chrono-pre',P);choose(m);openEdit()})};
 $('eback').onclick=closeEdit;$('ren').onclick=function(){if(act)rename(act)};$('dele').onclick=function(){if(act)del(act)};
@@ -180,6 +215,46 @@ document.querySelectorAll('.ctl button').forEach(function(b){b.onclick=function(
 function showF(){for(var k in F)$('f-'+k).textContent=k==='rounds'?F[k]:dur(F[k]);$('ftot').textContent='Durée totale : '+dur(F.prep+F.rounds*F.work+(F.rounds-1)*F.rest)}
 $('pre').onchange=function(){choose(this.value)};showF();
 show();
+var D=ld('chrono-days',{}),cn=new Date(),cy=cn.getFullYear(),cm=cn.getMonth();
+function dkey(y,m,d){return y+'-'+(m+1<10?'0':'')+(m+1)+'-'+(d<10?'0':'')+d}
+function todayKey(){var n=new Date();return dkey(n.getFullYear(),n.getMonth(),n.getDate())}
+function markToday(){D[todayKey()]=1;put('chrono-days',D)}
+function renderCal(){var g=$('cgrid'),first=(new Date(cy,cm,1).getDay()+6)%7,n=new Date(cy,cm+1,0).getDate(),cnt=0,t=todayKey();g.innerHTML='';
+$('cmon').textContent=new Date(cy,cm,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+['L','M','M','J','V','S','D'].forEach(function(x){var e=document.createElement('div');e.className='cwk';e.textContent=x;g.appendChild(e)});
+for(var i=0;i<first;i++)g.appendChild(document.createElement('div'));
+for(var d=1;d<=n;d++){(function(d){var k=dkey(cy,cm,d),b=document.createElement('button');b.className='cdy'+(D[k]?' on':'')+(k===t?' td':'');b.textContent=d;b.setAttribute('aria-pressed',D[k]?'true':'false');if(D[k])cnt++;
+b.onclick=function(){if(D[k])delete D[k];else D[k]=1;put('chrono-days',D);renderCal()};g.appendChild(b)})(d)}
+$('ccount').textContent=cnt+(cnt>1?' jours':' jour')+' de salle ce mois-ci'}
+$('cprev').onclick=function(){cm--;if(cm<0){cm=11;cy--}renderCal()};
+$('cnext').onclick=function(){cm++;if(cm>11){cm=0;cy++}renderCal()};
+$('cmon').onclick=function(){var n=new Date();cy=n.getFullYear();cm=n.getMonth();renderCal()};
+renderCal();
+var E=ld('chrono-perf',[]),xid=0,wst=Number(raw('chrono-wstep','2.5'))||2.5;
+function wf(n){return String(Math.round(n*100)/100).replace('.',',')}
+function xcur(){for(var i=0;i<E.length;i++)if(E[i].id===xid)return E[i]}
+function xsave(){put('chrono-perf',E)}
+function renderPerf(){var l=$('xlist'),pn=Object.keys(P);l.innerHTML='';
+$('xhint').textContent=E.length?'Touche un exercice pour régler son poids, ses séries et ses répétitions.':'Aucun exercice pour l’instant. Touche « + Exercice » pour en ajouter un, par exemple « Développé couché ».';
+pn.concat(['']).forEach(function(g){var items=E.filter(function(x){return (P[x.g]?x.g:'')===g});if(!items.length)return;
+var h=document.createElement('div');h.className='gh';h.textContent=g||(pn.length?'Sans séance':'Exercices');l.appendChild(h);
+items.forEach(function(e){var r=document.createElement('div'),t=document.createElement('div'),a=document.createElement('b'),b=document.createElement('small');
+r.className='srow';t.className='st';a.textContent=e.name;b.textContent=e.s+' × '+e.r+' · '+wf(e.w)+' kg';t.appendChild(a);t.appendChild(b);
+r.onclick=function(){xid=e.id;openX()};r.appendChild(t);l.appendChild(r)})})}
+function showX(){var e=xcur();if(!e)return;$('xtitle').textContent=e.name;$('x-w').textContent=wf(e.w)+' kg';$('x-s').textContent=e.s;$('x-r').textContent=e.r;$('xstep').value=String(wst);
+var s=$('xg');s.innerHTML='';function add(v,t){var o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o)}
+add('','Aucune');Object.keys(P).forEach(function(n){add(n,n)});s.value=P[e.g]?e.g:''}
+function openX(){$('xl').style.display='none';$('xe').style.display='flex';showX()}
+function closeX(){$('xe').style.display='none';$('xl').style.display='flex';renderPerf()}
+document.querySelectorAll('.ctl2 button').forEach(function(b){b.onclick=function(){var e=xcur();if(!e)return;var k=b.dataset.x,d=Number(b.dataset.d);
+if(k==='w')e.w=Math.min(500,Math.max(0,Math.round((e.w+d*wst)*100)/100));else if(k==='s')e.s=Math.min(20,Math.max(1,e.s+d));else e.r=Math.min(100,Math.max(1,e.r+d));xsave();showX()}});
+$('xstep').onchange=function(){wst=Number(this.value)||2.5;rawput('chrono-wstep',String(wst))};
+$('xg').onchange=function(){var e=xcur();if(e){e.g=this.value;xsave()}};
+$('xback').onclick=closeX;
+$('xnew').onclick=function(){dlg('Nom de l’exercice (ex. Développé couché)','',function(m){m=(m||'').trim().slice(0,40);if(!m)return;var e={id:Date.now(),name:m,w:20,s:3,r:10,g:''};E.push(e);xsave();xid=e.id;openX()})};
+$('xren').onclick=function(){var e=xcur();if(!e)return;dlg('Nouveau nom',e.name,function(m){m=(m||'').trim().slice(0,40);if(!m)return;e.name=m;xsave();showX()})};
+$('xdel').onclick=function(){var e=xcur();if(!e)return;dlg('Supprimer « '+e.name+' » ?','',function(){E=E.filter(function(x){return x.id!==e.id});xsave();closeX()},1)};
+renderPerf();
 var snd=raw('chrono-snd','voix'),cd=raw('chrono-cd','voix');$('snd').value=snd;$('cd').value=cd;
 var W={bip:'sine',cloche:'triangle',buzzer:'square',tic:'sine'};
 function preview(){silent();setTimeout(function(){if(!tick&&sa)sa.pause()},2500)}
@@ -202,21 +277,21 @@ for(var r=1;r<=R.rounds;r++){steps.push({t:'work',d:R.work,r:r});if(r<R.rounds&&
 var a=0;for(var i=steps.length-1;i>=0;i--){steps[i].after=a;a+=steps[i].d}}
 function label(s){return s.t==='prep'?'Préparation':s.t==='rest'?'Repos':(s.name||'Exercice')}
 var curTab='t-home';
-function sec(id){['t-home','t-sess','t-free','t-snd','run'].forEach(function(x){$(x).style.display=x===id?'flex':'none'});$('tabs').style.display=id==='run'?'none':'flex';
+function sec(id){['t-home','t-sess','t-free','t-cal','t-perf','t-snd','run'].forEach(function(x){$(x).style.display=x===id?'flex':'none'});$('tabs').style.display=id==='run'?'none':'flex';
 if(id!=='run'){curTab=id;document.querySelectorAll('#tabs button').forEach(function(b){b.className=b.dataset.t===id?'on':''})}}
-document.querySelectorAll('#tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='t-sess')closeEdit();sec(b.dataset.t)}});
+document.querySelectorAll('#tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='t-sess')closeEdit();if(b.dataset.t==='t-perf')closeX();if(b.dataset.t==='t-cal'){var nw=new Date();cy=nw.getFullYear();cm=nw.getMonth();renderCal()}sec(b.dataset.t)}});
 function enter(i){idx=i;if(i>=steps.length)return finish();var s=steps[i],n=steps[i+1];document.body.className=s.t;$('phase').textContent=label(s);
 $('round').textContent=(rname?rname+' · ':'')+(s.t==='prep'?'Prêt ?':'Round '+s.r+' / '+R.rounds);$('next').textContent=n?'Ensuite : '+label(n)+' · '+dur(n.d):'Dernière étape';
 left=s.d*1000;endAt=Date.now()+left;lastSec=-1;
 if(snd==='voix')say(label(s));else if(i>0)beep(s.t==='work'?1000:600,.35);if(i>0)buzz(s.t==='work'?[200,80,200]:300);draw()}
 function draw(){var sc=Math.ceil(left/1000),tm=$('time');tm.textContent=sc>=60?Math.floor(sc/60)+':'+(sc%60<10?'0':'')+sc%60:sc;tm.style.fontSize=sc>=60?'clamp(110px,36vw,180px)':'';
 var st=steps[idx];if(st){$('barf').style.width=Math.min(100,100-left/(st.d*10))+'%';$('rem').textContent='Temps restant : '+dur(sc+st.after)}
-if(sc!==lastSec){lastSec=sc;var cs=steps[idx];if(cs&&cs.t==='rest'&&sc%30===0&&sc<cs.d&&sc>5&&!(snd==='off'&&cd==='off'))say(sc+' secondes restantes');if(sc<=5&&sc>0&&idx<steps.length){if(cd==='voix')say(sc);else beep(800,.12,cd);buzz(60)}}}
+if(sc!==lastSec){lastSec=sc;var cs=steps[idx];if(cs&&cs.t==='rest'&&sc===30&&cs.d>30){if(cd==='voix')say('30 secondes');else beep(800,.3,cd);buzz(200)}if(sc<=5&&sc>0&&idx<steps.length){if(cd==='voix')say(sc);else beep(800,.12,cd);buzz(60)}}}
 function loop(){if(paused)return;left=endAt-Date.now();if(left<=0)enter(idx+1);else draw()}
 async function lock(){try{if(navigator.wakeLock)wl=await navigator.wakeLock.request('screen')}catch(e){}}
 function unlock(){try{wl&&wl.release();wl=null}catch(e){}}
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&tick&&!paused)lock()});
-function launch(cfg,name){R=cfg;rname=name;silent();try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}
+function launch(cfg,name){R=cfg;rname=name;markToday();silent();try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}
 build();paused=false;sec('run');$('pause').textContent='Pause';delete $('pause').dataset.done;$('prev').style.display=$('skip').style.display='';
 try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}
 lock();enter(0);clearInterval(tick);tick=setInterval(loop,100)}
