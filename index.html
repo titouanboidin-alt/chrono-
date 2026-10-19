@@ -82,6 +82,7 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 .dbtn{display:flex;gap:10px}.dbtn button{flex:1;height:48px;border-radius:12px;font-size:16px}
 .vw{display:flex;flex-direction:column;gap:12px}
 .srow::after{content:"›";color:var(--mut);font-size:22px;padding:0 4px}
+#rem{font-size:18px;font-weight:600;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -109,6 +110,16 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 <div class="dbtn"><button class="txt" id="ren">Renommer</button><button class="txt" id="dele">Supprimer</button></div>
 </div>
 </section>
+<section id="t-free" class="tab">
+<h1>Séance libre</h1>
+<div class="row d p"><span>Préparation</span><div class="ctl"><button data-f="1" data-k="prep" data-d="-5" aria-label="Moins">−</button><b id="f-prep"></b><button data-f="1" data-k="prep" data-d="5" aria-label="Plus">+</button></div></div>
+<div class="row d w"><span>Exercice</span><div class="ctl"><button data-f="1" data-k="work" data-d="-5" aria-label="Moins">−</button><b id="f-work"></b><button data-f="1" data-k="work" data-d="5" aria-label="Plus">+</button></div></div>
+<div class="row d r"><span>Repos</span><div class="ctl"><button data-f="1" data-k="rest" data-d="-5" aria-label="Moins">−</button><b id="f-rest"></b><button data-f="1" data-k="rest" data-d="5" aria-label="Plus">+</button></div></div>
+<div class="row"><span>Rounds</span><div class="ctl"><button data-f="1" data-k="rounds" data-d="-1" aria-label="Moins">−</button><b id="f-rounds"></b><button data-f="1" data-k="rounds" data-d="1" aria-label="Plus">+</button></div></div>
+<p class="hint" id="ftot" style="text-align:center"></p>
+<p class="hint">Règle les temps à la volée, sans les enregistrer dans une séance.</p>
+<button class="go" id="fstart" style="margin-top:auto">Démarrer</button>
+</section>
 <section id="t-snd" class="tab">
 <h1>Sons</h1>
 <div class="row"><span>Son étape</span><select id="snd" aria-label="Son de changement d'étape"><option value="voix">Voix</option><option value="bip">Bip</option><option value="cloche">Cloche</option><option value="buzzer">Buzzer</option><option value="off">Aucun</option></select></div>
@@ -117,11 +128,11 @@ section.tab{gap:12px;padding-bottom:12px;overflow-y:auto}
 </section>
 <section id="run">
 <div id="bar"><i id="barf"></i></div>
-<div id="phase"></div><div id="time">0</div><div id="round"></div><div id="next"></div>
+<div id="phase"></div><div id="time">0</div><div id="round"></div><div id="rem"></div><div id="next"></div>
 <div class="btns"><button id="prev">‹ Retour</button><button id="pause">Pause</button><button id="skip">Passer ›</button></div>
 <button class="stopb" id="stop">Arrêter</button>
 </section>
-<nav id="tabs"><button data-t="t-home" class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Accueil</button><button data-t="t-sess"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Séances</button><button data-t="t-snd"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Sons</button></nav>
+<nav id="tabs"><button data-t="t-home" class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Accueil</button><button data-t="t-sess"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Séances</button><button data-t="t-free"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>Libre</button><button data-t="t-snd"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Sons</button></nav>
 </main>
 <script>
 var $=function(i){return document.getElementById(i)};
@@ -131,6 +142,7 @@ function raw(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}
 function rawput(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 var S={prep:10,work:40,rest:20,rounds:8},L={prep:[0,120],work:[5,600],rest:[0,600],rounds:[1,50]};
 var o0=ld('chrono',null);if(o0)for(var k in S)if(typeof o0[k]==='number')S[k]=o0[k];
+var F=ld('chrono-free',{prep:10,work:40,rest:20,rounds:8}),R=S,rname='';for(var k in S)if(typeof F[k]!=='number')F[k]=S[k];
 var P=ld('chrono-pre',{}),act=raw('chrono-act','');
 if(act&&!P[act])act='';
 if(act){var p0=P[act];for(var k in S)if(typeof p0[k]==='number')S[k]=p0[k]}
@@ -164,8 +176,9 @@ function del(n){dlg('Supprimer « '+n+' » ?','',function(){delete P[n];if(act==
 $('pnew').onclick=function(){dlg('Nom de la séance (ex. Pectoraux)','',function(m){m=(m||'').trim().slice(0,30);if(!m)return;if(P[m])return dup();
 P[m]={prep:10,work:40,rest:20,rounds:8};put('chrono-pre',P);choose(m);openEdit()})};
 $('eback').onclick=closeEdit;$('ren').onclick=function(){if(act)rename(act)};$('dele').onclick=function(){if(act)del(act)};
-document.querySelectorAll('.ctl button').forEach(function(b){b.onclick=function(){var k=b.dataset.k;S[k]=Math.min(L[k][1],Math.max(L[k][0],S[k]+Number(b.dataset.d)));saveS()}});
-$('pre').onchange=function(){choose(this.value)};
+document.querySelectorAll('.ctl button').forEach(function(b){b.onclick=function(){var k=b.dataset.k,T=b.dataset.f?F:S;T[k]=Math.min(L[k][1],Math.max(L[k][0],T[k]+Number(b.dataset.d)));if(b.dataset.f){put('chrono-free',F);showF()}else saveS()}});
+function showF(){for(var k in F)$('f-'+k).textContent=k==='rounds'?F[k]:dur(F[k]);$('ftot').textContent='Durée totale : '+dur(F.prep+F.rounds*F.work+(F.rounds-1)*F.rest)}
+$('pre').onchange=function(){choose(this.value)};showF();
 show();
 var snd=raw('chrono-snd','voix'),cd=raw('chrono-cd','voix');$('snd').value=snd;$('cd').value=cd;
 var W={bip:'sine',cloche:'triangle',buzzer:'square',tic:'sine'};
@@ -184,35 +197,38 @@ var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime,c=s==='cloche',dd
 o.frequency.value=s==='buzzer'?f/3:c?f*1.5:s==='tic'?f*1.75:f;g.gain.setValueAtTime(s==='buzzer'?.15:.3,t);if(c)g.gain.exponentialRampToValueAtTime(.001,t+dd);
 o.connect(g);g.connect(ac.destination);o.start();o.stop(t+dd)}catch(e){}}
 function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
-function build(){steps=[];if(S.prep>0)steps.push({t:'prep',d:S.prep});
-for(var r=1;r<=S.rounds;r++){steps.push({t:'work',d:S.work,r:r});if(r<S.rounds&&S.rest>0)steps.push({t:'rest',d:S.rest,r:r})}}
+function build(){steps=[];if(R.prep>0)steps.push({t:'prep',d:R.prep});
+for(var r=1;r<=R.rounds;r++){steps.push({t:'work',d:R.work,r:r});if(r<R.rounds&&R.rest>0)steps.push({t:'rest',d:R.rest,r:r})}
+var a=0;for(var i=steps.length-1;i>=0;i--){steps[i].after=a;a+=steps[i].d}}
 function label(s){return s.t==='prep'?'Préparation':s.t==='rest'?'Repos':(s.name||'Exercice')}
 var curTab='t-home';
-function sec(id){['t-home','t-sess','t-snd','run'].forEach(function(x){$(x).style.display=x===id?'flex':'none'});$('tabs').style.display=id==='run'?'none':'flex';
+function sec(id){['t-home','t-sess','t-free','t-snd','run'].forEach(function(x){$(x).style.display=x===id?'flex':'none'});$('tabs').style.display=id==='run'?'none':'flex';
 if(id!=='run'){curTab=id;document.querySelectorAll('#tabs button').forEach(function(b){b.className=b.dataset.t===id?'on':''})}}
 document.querySelectorAll('#tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='t-sess')closeEdit();sec(b.dataset.t)}});
 function enter(i){idx=i;if(i>=steps.length)return finish();var s=steps[i],n=steps[i+1];document.body.className=s.t;$('phase').textContent=label(s);
-$('round').textContent=(act?act+' · ':'')+(s.t==='prep'?'Prêt ?':'Round '+s.r+' / '+S.rounds);$('next').textContent=n?'Ensuite : '+label(n)+' · '+dur(n.d):'Dernière étape';
+$('round').textContent=(rname?rname+' · ':'')+(s.t==='prep'?'Prêt ?':'Round '+s.r+' / '+R.rounds);$('next').textContent=n?'Ensuite : '+label(n)+' · '+dur(n.d):'Dernière étape';
 left=s.d*1000;endAt=Date.now()+left;lastSec=-1;
 if(snd==='voix')say(label(s));else if(i>0)beep(s.t==='work'?1000:600,.35);if(i>0)buzz(s.t==='work'?[200,80,200]:300);draw()}
 function draw(){var sc=Math.ceil(left/1000),tm=$('time');tm.textContent=sc>=60?Math.floor(sc/60)+':'+(sc%60<10?'0':'')+sc%60:sc;tm.style.fontSize=sc>=60?'clamp(110px,36vw,180px)':'';
-var st=steps[idx];if(st)$('barf').style.width=Math.min(100,100-left/(st.d*10))+'%';
-if(sc!==lastSec){lastSec=sc;if(sc<=5&&sc>0&&idx<steps.length){if(cd==='voix')say(sc);else beep(800,.12,cd);buzz(60)}}}
+var st=steps[idx];if(st){$('barf').style.width=Math.min(100,100-left/(st.d*10))+'%';$('rem').textContent='Temps restant : '+dur(sc+st.after)}
+if(sc!==lastSec){lastSec=sc;var cs=steps[idx];if(cs&&cs.t==='rest'&&sc%30===0&&sc<cs.d&&sc>5&&!(snd==='off'&&cd==='off'))say(sc+' secondes restantes');if(sc<=5&&sc>0&&idx<steps.length){if(cd==='voix')say(sc);else beep(800,.12,cd);buzz(60)}}}
 function loop(){if(paused)return;left=endAt-Date.now();if(left<=0)enter(idx+1);else draw()}
 async function lock(){try{if(navigator.wakeLock)wl=await navigator.wakeLock.request('screen')}catch(e){}}
 function unlock(){try{wl&&wl.release();wl=null}catch(e){}}
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&tick&&!paused)lock()});
-$('start').onclick=function(){if(!act){sec('t-sess');return}silent();try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}
+function launch(cfg,name){R=cfg;rname=name;silent();try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}
 build();paused=false;sec('run');$('pause').textContent='Pause';delete $('pause').dataset.done;$('prev').style.display=$('skip').style.display='';
 try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}
-lock();enter(0);clearInterval(tick);tick=setInterval(loop,100)};
+lock();enter(0);clearInterval(tick);tick=setInterval(loop,100)}
+$('start').onclick=function(){if(!act){sec('t-sess');return}launch(S,act)};
+$('fstart').onclick=function(){launch(F,'')};
 $('pause').onclick=function(){if($('pause').dataset.done)return stop();paused=!paused;
 if(paused){left=endAt-Date.now();$('pause').textContent='Reprendre'}else{endAt=Date.now()+left;$('pause').textContent='Pause'}};
 $('skip').onclick=function(){if(idx<steps.length)enter(idx+1)};
 $('prev').onclick=function(){if(idx<steps.length)enter(Math.max(0,idx-1))};
 function finish(){clearInterval(tick);tick=null;unlock();document.body.className='';
 var t=0;steps.forEach(function(s){t+=s.d});
-$('phase').textContent='Terminé';$('time').textContent='✓';$('time').style.fontSize='';$('round').textContent=S.rounds+' rounds · '+dur(t);$('next').textContent='';$('barf').style.width='100%';
+$('phase').textContent='Terminé';$('time').textContent='✓';$('time').style.fontSize='';$('round').textContent=R.rounds+' rounds · '+dur(t);$('rem').textContent='';$('next').textContent='';$('barf').style.width='100%';
 $('prev').style.display=$('skip').style.display='none';$('pause').textContent='Recommencer';$('pause').dataset.done='1';
 if(snd==='voix')say('Terminé');else{beep(1000,.2);setTimeout(function(){beep(1200,.4)},250)}buzz([300,100,300,100,300])}
 function stop(){clearInterval(tick);tick=null;unlock();try{sa&&sa.pause()}catch(e){}delete $('pause').dataset.done;document.body.className='';sec(curTab)}
